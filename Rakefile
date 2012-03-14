@@ -15,12 +15,12 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "less_interactions"
-  gem.homepage = "http://github.com/minciue/less_interactions"
+  gem.homepage = "http://github.com/LessEverything/less_interactions"
   gem.license = "MIT"
   gem.summary = %Q{A new way to think about Ruby applications.}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.description = %Q{A new way to think about Ruby applications.}
   gem.email = "eugen@lesseverything.com"
-  gem.authors = ["Eugen Minciu"]
+  gem.authors = ["Eugen Minciu", "Dejan Simic", "Steven Bristol"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new

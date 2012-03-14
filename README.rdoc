@@ -1,6 +1,6 @@
 = less_interactions
 
-Description goes here.
+A new way to think about your Ruby applications.
 
 == Contributing to less_interactions
  
@@ -14,6 +14,4 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2012 Eugen Minciu. See LICENSE.txt for
-further details.
-
+Copyright (c) 2012 LessEverything See LICENSE.txt for further details.
