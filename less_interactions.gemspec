@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less_interactions}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Eugen Minciu", "Dejan Simic", "Steven Bristol"]
-  s.date = %q{2012-03-14}
+  s.date = %q{2012-03-15}
   s.description = %q{A new way to think about Ruby applications.}
   s.email = %q{eugen@lesseverything.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "less_interactions.gemspec",
     "lib/less_interactions.rb",
     "lib/less_interactions/interaction.rb",
     "test/interaction_test.rb",
