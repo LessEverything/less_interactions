@@ -27,4 +27,40 @@ class InteractionTest < Test::Unit::TestCase
     InteractionExpectingRun.any_instance.expects(:run)
     InteractionExpectingRun.run
   end
+
+  should "fail if an expected parameter is not found" do
+    class InteractionMissingParameter < Less::Interaction
+      expects :title
+
+      def run; end
+    end
+    assert_raise(MissingParameterError) { InteractionMissingParameter.run }
+  end
+
+  should "fail if an expected parameter is nil" do
+    class InteractionWithNilParameter < Less::Interaction
+      expects :title
+
+      def run; end
+    end
+    assert_raise(MissingParameterError) { InteractionWithNilParameter.run(:title => nil) }
+  end
+
+  should "run if an expected parameter is found" do
+    class InteractionWithParameter < Less::Interaction
+      expects :title
+
+      def run; end
+    end
+    assert_nothing_raised { InteractionWithParameter.run(:title => "Hello, test") }
+  end
+
+  should "run if an expected parameter is found, even if it is nil, if the option is specified" do
+    class InteractionWithParameter < Less::Interaction
+      expects :title, :allow_nil => true
+
+      def run; end
+    end
+    assert_nothing_raised { InteractionWithParameter.run(:title => nil) }
+  end
 end
