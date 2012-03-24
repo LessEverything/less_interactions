@@ -48,9 +48,9 @@ module Less
     def self.expectations_met?(options)
       expectations.each do |param, param_options|
 	if param_options[:allow_nil]
-	  raise MissingParameterError unless options.keys.member?(param)
+	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless options.keys.member?(param)
 	else
-	  raise MissingParameterError unless options[param]
+	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" unless options[param]
 	end
       end
     end
