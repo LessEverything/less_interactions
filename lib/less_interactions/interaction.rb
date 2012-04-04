@@ -3,6 +3,9 @@ module Less
     # Initialize the objects for an interaction. You should override this in your interactions. 
     # @param [Hash] options   The options are passed when running an interaction
     def initialize(options = {})
+      options.each do |name, value|
+        instance_variable_set "@#{name}", value
+      end
     end
 
     # Definition of the interaction itself. You should override this in your interactions

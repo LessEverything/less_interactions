@@ -63,4 +63,11 @@ class InteractionTest < Test::Unit::TestCase
     end
     assert_nothing_raised { InteractionWithParameter.run(:title => nil) }
   end
+  
+  should "set ivars from options on initialize" do
+    i = Less::Interaction.new a: 1, b:2
+    assert_equal 1, i.instance_variable_get(:@a)
+    assert_equal 2, i.instance_variable_get(:@b)
+  end
+  
 end
