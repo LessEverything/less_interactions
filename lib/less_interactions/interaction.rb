@@ -51,11 +51,11 @@ module Less
 
     def expectations_met?
       self.class.expectations.each do |param, param_options|
-    	if param_options[:allow_nil]
-    	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless instance_variable_defined? "@#{param}"
-    	else
-    	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" unless instance_variable_get "@#{param}"
-    	end
+      	if param_options[:allow_nil]
+      	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless instance_variable_defined? "@#{param}"
+      	else
+      	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" unless instance_variable_get "@#{param}"
+      	end
       end
     end
 

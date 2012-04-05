@@ -72,15 +72,15 @@ class InteractionTest < Test::Unit::TestCase
   
   should "be able to fake out expects" do
     class X < Less::Interaction
-      expects :object_not_id
-      def initizlize params
-        super :object_not_id => params[:object_id].to_s #or a finder or something instead of to_s
+      expects :object
+      def initialize params
+        super :object => params[:object_id].to_s #or a finder or something instead of to_s
       end
-      def run; end
+      def run; self; end
     end
     assert_nothing_raised do
-      x = X.new( :object_id => 1).run
-      assert_equal "1", x.instance_variable_get(:@object_not_id)
+      x = X.run( :object_id => 1)
+      assert_equal "1", x.instance_variable_get(:@object)
     end
   end
   
