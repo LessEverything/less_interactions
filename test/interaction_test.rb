@@ -76,7 +76,7 @@ class InteractionTest < Test::Unit::TestCase
       def initialize params
         super :object => params[:object_id].to_s #or a finder or something instead of to_s
       end
-      def run; self; end
+      def run; self; end #return self just so I can test the value
     end
     assert_nothing_raised do
       x = X.run( :object_id => 1)
