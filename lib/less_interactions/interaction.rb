@@ -21,8 +21,9 @@ module Less
     # This will initialize your interaction with the options you pass to it and then call its {#run} method.
     def self.run(options = {})
       raise InvalidInteractionError, "Every interaction must be initialized with an options hash" unless options.is_a?(Hash)
-      raise MissingParameterError unless expectations_met?(options)
-      self.new(options).run
+      me = new(options)
+      raise MissingParameterError unless me.send :expectations_met?
+      me.run
     end
 
     # Expect certain parameters to be present. If any parameter can't be found, a {MissingParameterError} will be raised. 
@@ -35,26 +36,26 @@ module Less
  
     def self.expects(*parameters)
       if parameters.last.is_a?(Hash)
-	options = parameters.pop
-      else
-	options = {}
+      	options = parameters.pop
+            else
+      	options = {}
       end
       parameters.each { |param| add_expectation(param, options) }
     end
-
+    
     private
 
     def self.add_expectation(parameter, options)
       expectations[parameter] = options
     end
 
-    def self.expectations_met?(options)
-      expectations.each do |param, param_options|
-	if param_options[:allow_nil]
-	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless options.keys.member?(param)
-	else
-	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" unless options[param]
-	end
+    def expectations_met?
+      self.class.expectations.each do |param, param_options|
+    	if param_options[:allow_nil]
+    	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless instance_variable_defined? "@#{param}"
+    	else
+    	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" unless instance_variable_get "@#{param}"
+    	end
       end
     end
 
