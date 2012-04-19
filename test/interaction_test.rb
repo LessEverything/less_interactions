@@ -55,6 +55,15 @@ class InteractionTest < Test::Unit::TestCase
     assert_nothing_raised { InteractionWithParameter.run(:title => "Hello, test") }
   end
 
+  should "run if an expected parameter is found, even if it is false" do
+    class InteractionWithParameter < Less::Interaction
+      expects :title
+
+      def run; end
+    end
+    assert_nothing_raised { InteractionWithParameter.run(:title => false) }
+  end
+
   should "run if an expected parameter is found, even if it is nil, if the option is specified" do
     class InteractionWithParameter < Less::Interaction
       expects :title, :allow_nil => true
