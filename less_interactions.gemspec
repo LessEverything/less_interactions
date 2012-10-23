@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "less_interactions.gemspec",
     "lib/less_interactions.rb",
     "lib/less_interactions/interaction.rb",
+    "lib/less_interactions/response.rb",
     "test/interaction_test.rb",
     "test/test_helper.rb"
   ]

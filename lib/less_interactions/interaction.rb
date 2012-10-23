@@ -1,3 +1,4 @@
+
 module Less
   class Interaction
     # Initialize the objects for an interaction. You should override this in your interactions. 
