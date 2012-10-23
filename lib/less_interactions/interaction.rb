@@ -55,7 +55,7 @@ module Less
       	if param_options[:allow_nil]
       	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless instance_variable_defined? "@#{param}"
       	else
-      	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" unless instance_variable_get "@#{param}"
+      	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" if instance_variable_get("@#{param}").nil?
       	end
       end
     end
