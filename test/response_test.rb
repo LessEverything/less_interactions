@@ -18,4 +18,43 @@ class ResponseTest < Test::Unit::TestCase
     end
   end
   
+  should "be successful" do
+    x = Less::Response.new 200, []
+    assert x.success?
+    assert_equal false, x.error?
+    assert_equal false, x.client_error?
+    assert_equal false, x.server_error?
+    x.status = 201
+    assert x.success?
+    assert_equal false, x.error?
+    assert_equal false, x.client_error?
+    assert_equal false, x.server_error?
+  end
+  
+  should "be client_error" do
+    x = Less::Response.new 400, []
+    assert x.error?
+    assert x.client_error?
+    assert_equal false, x.server_error?
+    assert_equal false, x.success?
+    x.status = 422
+    assert x.error?
+    assert x.client_error?
+    assert_equal false, x.server_error?
+    assert_equal false, x.success?
+  end
+  
+  should "be server_error" do
+    x = Less::Response.new 500, []
+    assert x.error?
+    assert x.server_error?
+    assert_equal false, x.client_error?
+    assert_equal false, x.success?
+    x.status = 501
+    assert x.error?
+    assert x.server_error?
+    assert_equal false, x.client_error?
+    assert_equal false, x.success?
+  end
+  
 end
