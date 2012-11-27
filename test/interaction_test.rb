@@ -78,19 +78,4 @@ class InteractionTest < Test::Unit::TestCase
     assert_equal 1, i.instance_variable_get(:@a)
     assert_equal 2, i.instance_variable_get(:@b)
   end
-  
-  should "be able to fake out expects" do
-    class X < Less::Interaction
-      expects :object
-      def initialize params
-        super :object => params[:object_id].to_s #or a finder or something instead of to_s
-      end
-      def run; self; end #return self just so I can test the value
-    end
-    assert_nothing_raised do
-      x = X.run( :object_id => 1)
-      assert_equal "1", x.instance_variable_get(:@object)
-    end
-  end
-  
 end
