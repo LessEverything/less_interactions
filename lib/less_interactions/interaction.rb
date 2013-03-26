@@ -6,6 +6,7 @@ module Less
     def initialize(options = {})
       options.each do |name, value|
         instance_variable_set "@#{name}", value
+        self.class.send(:define_method, name) {value}
       end
     end
 
