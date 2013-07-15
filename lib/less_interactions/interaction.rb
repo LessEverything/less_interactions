@@ -3,7 +3,12 @@ module Less
   class Interaction
     # Initialize the objects for an interaction. You should override this in your interactions. 
     # @param [Hash] options   The options are passed when running an interaction
-    def initialize(options = {})
+    def initialize(context, options = {})
+      if context.is_a? Hash
+        options.merge context
+      else
+        options[:context] = context
+      end
       options.each do |name, value|
         instance_variable_set "@#{name}", value
         self.class.send(:define_method, name) {value}
