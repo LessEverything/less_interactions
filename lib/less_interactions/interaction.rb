@@ -5,7 +5,7 @@ module Less
     # @param [Hash] options   The options are passed when running an interaction
     def initialize(context, options = {})
       if context.is_a? Hash
-        options.merge context
+        options.merge! context
       else
         options[:context] = context
       end

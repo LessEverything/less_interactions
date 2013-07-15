@@ -79,6 +79,13 @@ class InteractionTest < Test::Unit::TestCase
     assert_equal 2, i.instance_variable_get(:@b)
   end
   
+  
+  should "Convert first param to context on initialize" do
+    i = Less::Interaction.new 1, b:2
+    assert_equal 1, i.instance_variable_get(:@context)
+    assert_equal 2, i.instance_variable_get(:@b)
+  end
+  
   should "be able to fake out expects" do
     class X < Less::Interaction
       expects :object
