@@ -7,11 +7,6 @@ class InteractionTest < Test::Unit::TestCase
     assert_raise(InvalidInteractionError) { InteractionWithoutRun.run }
   end
 
-  should "not be able to run an interaction with something that isn't an options hash" do
-    class InteractionWithSomethingElse < Interaction; def run; end; end
-    assert_raise(InvalidInteractionError) { InteractionWithSomethingElse.run('a') }
-  end
-
   should "be able to run an interaction with run defined" do
     class InteractionWithRun < Interaction ; def run; end ; end
     assert_nothing_raised { InteractionWithRun.run }
@@ -87,17 +82,30 @@ class InteractionTest < Test::Unit::TestCase
   end
   
   should "be able to fake out expects" do
-    class X < Less::Interaction
+    class FakeoutExpects < Less::Interaction
       expects :object
-      def initialize params
+      def initialize params, options
         super :object => params[:object_id].to_s #or a finder or something instead of to_s
       end
       def run; self; end #return self just so I can test the value
     end
     assert_nothing_raised do
-      x = X.run( :object_id => 1)
+      x = FakeoutExpects.run( :object_id => 1)
       assert_equal "1", x.instance_variable_get(:@object)
     end
+  end
+  
+  should "be able to override an excepts" do
+    
+    class OverrideExpects < Less::Interaction
+      expects :object, allow_nil: true
+      
+      def run; self; end #return self just so I can test the value
+      def object; "YES!";  end
+    end
+    
+    x = OverrideExpects.new(1, object: "no :(").run
+    assert_equal "YES!", x.object
   end
   
 end

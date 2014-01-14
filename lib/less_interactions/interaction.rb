@@ -1,19 +1,22 @@
 
 module Less
   class Interaction
-    # Initialize the objects for an interaction. You should override this in your interactions. 
-    # @param [Hash] options   The options are passed when running an interaction
-    def initialize(context, options = {})
+    # Initialize the objects for an interaction. 
+    # @param [Object] context The context for running an interaction. Optional param.
+    # @param [Hash] options   The options are passed when running an interaction. Optional param.
+    def initialize(context = {}, options = {})
+      #the param context = {} is to allow for interactions with no context
       if context.is_a? Hash
-        options.merge! context
+        options.merge! context #context is not a Context so merge it in
       else
-        options[:context] = context
+        options[:context] = context # add context to the options so will get the ivar and gette
       end
       options.each do |name, value|
         instance_variable_set "@#{name}", value
-        self.class.send(:define_method, name) {value}
+        eval "def #{name}; instance_variable_get :@#{name}; end"
       end
     end
+    
 
     # Definition of the interaction itself. You should override this in your interactions
     #
@@ -23,12 +26,12 @@ module Less
     end
 
     # Run your interaction.
+    # @param [Object] context   
     # @param [Hash] options   
     #
     # This will initialize your interaction with the options you pass to it and then call its {#run} method.
-    def self.run(options = {})
-      raise InvalidInteractionError, "Every interaction must be initialized with an options hash" unless options.is_a?(Hash)
-      me = new(options)
+    def self.run(context = {}, options = {})
+      me = new(context, options)
       raise MissingParameterError unless me.send :expectations_met?
       me.run
     end
@@ -43,12 +46,14 @@ module Less
  
     def self.expects(*parameters)
       if parameters.last.is_a?(Hash)
-      	options = parameters.pop
-            else
-      	options = {}
+        options = parameters.pop
+      else
+        options = {}
       end
       parameters.each { |param| add_expectation(param, options) }
     end
+    
+    
     
     private
 
@@ -58,11 +63,9 @@ module Less
 
     def expectations_met?
       self.class.expectations.each do |param, param_options|
-      	if param_options[:allow_nil]
-      	  raise MissingParameterError, "Parameter not passed   :#{param.to_s}" unless instance_variable_defined? "@#{param}"
-      	else
-      	  raise MissingParameterError, "Paramter empty   :#{param.to_s}" if instance_variable_get("@#{param}").nil?
-      	end
+        unless param_options[:allow_nil]
+          raise MissingParameterError, "Parameter empty   :#{param.to_s}" if instance_variable_get("@#{param}").nil?
+        end
       end
     end
 
