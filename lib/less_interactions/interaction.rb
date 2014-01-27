@@ -9,13 +9,21 @@ module Less
       if context.is_a? Hash
         options.merge! context #context is not a Context so merge it in
       else
-        options[:context] = context # add context to the options so will get the ivar and gette
+        options[:context] = context # add context to the options so will get the ivar and getter
       end
-      options.each do |name, value|
+      
+      ex = self.class.expectations.dup
+      n = ex.keep_if {|name, allow_nil| allow_nil.has_key?(:allow_nil) && allow_nil[:allow_nil]}
+      nils = {}
+      n.each do |name, val|
+        nils[name] = nil
+      end
+      nils.merge(options).each do |name, value|
         instance_variable_set "@#{name}", value
         eval "def #{name}; instance_variable_get :@#{name}; end"
       end
     end
+    
     
 
     # Definition of the interaction itself. You should override this in your interactions
@@ -73,6 +81,7 @@ module Less
       @expectations ||= {}
     end
   end
+
 
   class InvalidInteractionError < StandardError; end
   class MissingParameterError < StandardError; end

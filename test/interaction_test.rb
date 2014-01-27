@@ -95,7 +95,7 @@ class InteractionTest < Test::Unit::TestCase
     end
   end
   
-  should "be able to override an excepts" do
+  should "be able to override an expects" do
     
     class OverrideExpects < Less::Interaction
       expects :object, allow_nil: true
@@ -106,6 +106,18 @@ class InteractionTest < Test::Unit::TestCase
     
     x = OverrideExpects.new(1, object: "no :(").run
     assert_equal "YES!", x.object
+  end
+  
+  
+  should "get a method that returns nil from an allow_nil expects" do
+    
+    class NilExpects < Less::Interaction
+      expects :object, allow_nil: true
+      def run; self; end #return self just so I can test the value
+    end
+    
+    x = NilExpects.run
+    assert_equal nil, x.object
   end
   
 end
