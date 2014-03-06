@@ -2,6 +2,19 @@
 
 A new way to think about your Ruby applications.
 
+== What is it?
+
+Less::Interactions are a place to put all of your business logic. They're intedned to be used primarly inside a rails app but they don't need rails to work.
+
+== What problem is it solving?
+
+Rails is great, but if you build a rails app of any size you start running into problems:
+* Where do I put this bit of code?
+* Having a model call another model just to call the previous model is stupid and error prone.
+* ActiveRecord's before & after filters are the devil.
+* Where is the entry point to my app? Sometimes you access the app from places other than the controller (cron, console, background jobs), how do you know a safe entry point.
+* What are all the side effects of calling this method?
+
 == Contributing to less_interactions
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
@@ -14,4 +27,4 @@ A new way to think about your Ruby applications.
 
 == Copyright
 
-Copyright (c) 2012 LessEverything See LICENSE.txt for further details.
+Copyright (c) 2014 LessEverything See LICENSE.txt for further details.
