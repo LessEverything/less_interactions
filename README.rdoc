@@ -26,74 +26,74 @@ Less::Interactions are a place to put all of your business logic and still get a
 
 Before:
 
-class ExpensesController < ApplicationController
-
-  def create
-    @expense = current_business.expneses.create params[:expense]
-    respond_with @expense
-  end
+  class ExpensesController < ApplicationController
   
-end
-
-
-class Expense < ActiveRecord::Base
-  
-  # all sorts of before and after filters
-  # doing things like updating bank account balances, budgets
-  # creating other models like ExpenseItem" or Transaction
-
-end
-
-
-After:
-
-# You don't need a context class, but we really like using one.
-class Context
-  
-  def initialize *args
-    args[0].each do |name, value|
-      instance_variable_set "@#{name}", value
-      eval "def #{name}; instance_variable_get :@#{name}; end"
+    def create
+      @expense = current_business.expneses.create params[:expense]
+      respond_with @expense
     end
+    
   end
   
-end
-
-#Controller is basically the same
-class ExpensesController < ApplicationController
-
-  def create
-    @expense = Expenses::Save.run Context.new( business:current_business, user: current_user, params: params), some_other_thing_the_interaction_needs: "boo"
-    respond_with @expense
+  
+  class Expense < ActiveRecord::Base
+    
+    # all sorts of before and after filters
+    # doing things like updating bank account balances, budgets
+    # creating other models like ExpenseItem" or Transaction
+  
   end
   
-end
-
-# found in /app/interactions/expenses.save.rb
-class Expenses::Save < Less::Interaction
   
-  # A simple way of both enforcing params get passed in and creates and i_var and a getter for each expects
-  expects :some_other_thing_the_interaction_needs, allow_nil: true
+After:
   
-  # method chain in use case is easy to see.
-  def run
-    do_somthing_with some_other_thing_the_interaction_needs
-    build_or_find_an_expense
-    setup_expense_items
-    setup_transaction
-    return @expense unless valid?
-    save
-    update_budgets
-    update_bank_accounts
-    @expense
+  # You don't need a context class, but we really like using one.
+  class Context
+    
+    def initialize *args
+      args[0].each do |name, value|
+        instance_variable_set "@#{name}", value
+        eval "def #{name}; instance_variable_get :@#{name}; end"
+      end
+    end
+    
   end
   
-  private
+  #Controller is basically the same
+  class ExpensesController < ApplicationController
   
-  # implamentation of other methods
-  # some of which call other interactions
-
-end
+    def create
+      @expense = Expenses::Save.run Context.new( business:current_business, user: current_user, params: params), some_other_thing_the_interaction_needs: "boo"
+      respond_with @expense
+    end
+    
+  end
+  
+  # found in /app/interactions/expenses.save.rb
+  class Expenses::Save < Less::Interaction
+    
+    # A simple way of both enforcing params get passed in and creates and i_var and a getter for each expects
+    expects :some_other_thing_the_interaction_needs, allow_nil: true
+    
+    # method chain in use case is easy to see.
+    def run
+      do_somthing_with some_other_thing_the_interaction_needs
+      build_or_find_an_expense
+      setup_expense_items
+      setup_transaction
+      return @expense unless valid?
+      save
+      update_budgets
+      update_bank_accounts
+      @expense
+    end
+    
+    private
+    
+    # implamentation of other methods
+    # some of which call other interactions
+  
+  end
 
 
 
