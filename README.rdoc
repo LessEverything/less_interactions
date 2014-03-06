@@ -40,7 +40,7 @@ Before:
     
     # all sorts of before and after filters
     # doing things like updating bank account balances, budgets
-    # creating other models like ExpenseItem" or Transaction
+    # creating other models like ExpenseItem or Transaction
   
   end
   
