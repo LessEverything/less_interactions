@@ -90,7 +90,7 @@ After:
     
     private
     
-    # implamentation of other methods
+    # implementation of other methods
     # some of which call other interactions
   
   end
