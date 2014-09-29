@@ -51,3 +51,6 @@ tags
 
 # For rvm
 .rvmrc
+
+# For RubyMine
+.idea

@@ -32,6 +32,15 @@ class InteractionTest < Test::Unit::TestCase
     assert_raise(MissingParameterError) { InteractionMissingParameter.run }
   end
 
+  should "fail if an expected return value is not found" do
+    class InteractionMissingReturnValue < Less::Interaction
+      returns :title
+
+      def run; end
+    end
+    assert_raise(MissingReturnValueError) { InteractionMissingReturnValue.run }
+  end
+
   should "fail if an expected parameter is nil" do
     class InteractionWithNilParameter < Less::Interaction
       expects :title
