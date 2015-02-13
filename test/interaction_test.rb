@@ -17,6 +17,12 @@ class InteractionTest < Test::Unit::TestCase
     assert_nothing_raised { InteractionWithAHash.run(:test => 3) }
   end
 
+  should "call init when running an interaction" do
+    class InteractionExpectingInit < Interaction; def run; end; end
+    InteractionExpectingInit.any_instance.expects(:init)
+    InteractionExpectingInit.run
+  end
+
   should "call the run instance method when running an interaction" do
     class InteractionExpectingRun < Interaction; end
     InteractionExpectingRun.any_instance.expects(:run)
