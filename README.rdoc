@@ -2,6 +2,103 @@
 
 A new way to think about your Ruby applications.
 
+== What is it?
+
+Less::Interactions are a place to put all of your business logic. They're intedned to be used primarly inside a rails app but they don't need rails to work.
+
+== What problem is it solving?
+
+Rails is great, but if you build a rails app of any size you start running into problems:
+* ActiveRecord's before & after filters are the devil.
+* The code paths in my rails app are a fucking mess.
+* Where do I put this bit of code?
+* Having a model call another model just to call the previous model is stupid and error prone.
+* Where is the entry point to my app? Sometimes you access the app from places other than the controller (cron, console, background jobs), how do you know a safe entry point.
+* What are all the side effects of calling this method?
+
+
+== Dear jesus and baby jesus, what do I do?!
+
+Less::Interactions are a place to put all of your business logic and still get all the rails goodness you love.
+
+== Example
+
+
+Before:
+
+  class ExpensesController < ApplicationController
+  
+    def create
+      @expense = current_business.expneses.create params[:expense]
+      respond_with @expense
+    end
+    
+  end
+  
+  
+  class Expense < ActiveRecord::Base
+    
+    # all sorts of before and after filters
+    # doing things like updating bank account balances, budgets
+    # creating other models like ExpenseItem or Transaction
+  
+  end
+  
+  
+After:
+  
+  # You don't need a context class, but we really like using one.
+  class Context
+    
+    def initialize *args
+      args[0].each do |name, value|
+        instance_variable_set "@#{name}", value
+        eval "def #{name}; instance_variable_get :@#{name}; end"
+      end
+    end
+    
+  end
+  
+  #Controller is basically the same
+  class ExpensesController < ApplicationController
+  
+    def create
+      @expense = Expenses::Save.run Context.new( business:current_business, user: current_user, params: params), some_other_thing_the_interaction_needs: "boo"
+      respond_with @expense
+    end
+    
+  end
+  
+  # found in /app/interactions/expenses.save.rb
+  class Expenses::Save < Less::Interaction
+    
+    # A simple way of both enforcing params get passed in and creates and i_var and a getter for each expects
+    expects :some_other_thing_the_interaction_needs, allow_nil: true
+    
+    # method chain in use case is easy to see.
+    def run
+      do_somthing_with some_other_thing_the_interaction_needs
+      build_or_find_an_expense
+      setup_expense_items
+      setup_transaction
+      return @expense unless valid?
+      save
+      update_budgets
+      update_bank_accounts
+      @expense
+    end
+    
+    private
+    
+    # implementation of other methods
+    # some of which call other interactions
+  
+  end
+
+
+
+
+
 == Contributing to less_interactions
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
@@ -14,4 +111,4 @@ A new way to think about your Ruby applications.
 
 == Copyright
 
-Copyright (c) 2012 LessEverything See LICENSE.txt for further details.
+Copyright (c) 2015 LessEverything See LICENSE.txt for further details.
