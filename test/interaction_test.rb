@@ -69,24 +69,33 @@ class InteractionTest < Test::Unit::TestCase
     class InteractionWithParameter < Less::Interaction
       expects :title, :allow_nil => true
 
-      def run; end
+      def run;end
     end
     assert_nothing_raised { InteractionWithParameter.run(:title => nil) }
   end
-  
+
+  should "run if an expected parameter is found, even if it is nil, if the option is not specified, but is allow_nil and is called" do
+    class InteractionWithParameter < Less::Interaction
+      expects :title, :allow_nil => true
+
+      def run; title;end
+    end
+    assert_nothing_raised { InteractionWithParameter.run() }
+  end
+
   should "set ivars from options on initialize" do
     i = Less::Interaction.new a: 1, b:2
     assert_equal 1, i.instance_variable_get(:@a)
     assert_equal 2, i.instance_variable_get(:@b)
   end
-  
-  
+
+
   should "Convert first param to context on initialize" do
     i = Less::Interaction.new 1, b:2
     assert_equal 1, i.instance_variable_get(:@context)
     assert_equal 2, i.instance_variable_get(:@b)
   end
-  
+
   should "be able to fake out expects" do
     class FakeoutExpects < Less::Interaction
       expects :object
@@ -100,30 +109,30 @@ class InteractionTest < Test::Unit::TestCase
       assert_equal "1", x.instance_variable_get(:@object)
     end
   end
-  
+
   should "be able to override an expects" do
-    
+
     class OverrideExpects < Less::Interaction
       expects :object, allow_nil: true
-      
+
       def run; self; end #return self just so I can test the value
       def object; "YES!";  end
     end
-    
+
     x = OverrideExpects.new(1, object: "no :(").run
     assert_equal "YES!", x.object
   end
-  
-  
+
+
   should "get a method that returns nil from an allow_nil expects" do
-    
+
     class NilExpects < Less::Interaction
       expects :object, allow_nil: true
       def run; self; end #return self just so I can test the value
     end
-    
+
     x = NilExpects.run
     assert_equal nil, x.object
   end
-  
+
 end
