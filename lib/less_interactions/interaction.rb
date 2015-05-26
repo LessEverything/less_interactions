@@ -62,7 +62,8 @@ module Less
         options = {}
       end
       parameters.each do |param|
-        self.send(:attr_reader, param.to_sym) unless self.methods.member?(name)
+        methods = (self.instance_methods + self.private_instance_methods)
+        self.send(:attr_reader, param.to_sym) unless methods.member?(param.to_sym)
         add_expectation(param, options)
       end
     end

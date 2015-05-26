@@ -135,4 +135,19 @@ class InteractionTest < Test::Unit::TestCase
     assert_equal nil, x.object
   end
 
+  should "be able to override an inherited expects" do
+     class OverrideExpects < Less::Interaction
+       expects :int
+
+       def run; self; end #return self just so I can test the value
+       private
+       def int; @int.to_s;  end
+     end
+     class OverrideIt < OverrideExpects
+       expects :int
+     end
+
+     x = OverrideIt.new(int: 1).run
+     assert_equal "1", x.send(:int)
+   end
 end
