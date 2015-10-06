@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version = "0.0.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Eugen Minciu", "Dejan Simic", "Steven Bristol"]
+  s.authors = ["Eugen Minciu", "Steven Bristol"]
   s.date = %q{2012-03-24}
   s.description = %q{A new way to think about Ruby applications.}
   s.email = %q{eugen@lesseverything.com}
@@ -59,13 +59,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<guard-test>, [">= 0"])
     end
   else
-    s.add_dependency(%q<yard>, ["~> 0.7"])
-    s.add_dependency(%q<rdoc>, ["~> 3.12"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
-    s.add_dependency(%q<rcov>, [">= 0"])
-    s.add_dependency(%q<guard>, [">= 0"])
-    s.add_dependency(%q<guard-test>, [">= 0"])
   end
 end
 
