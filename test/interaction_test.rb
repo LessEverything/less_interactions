@@ -23,6 +23,15 @@ class InteractionTest < Test::Unit::TestCase
     InteractionExpectingInit.run
   end
 
+  should "call init when running an interaction with an init method" do
+    class InteractionExpectingInit < Interaction
+      def run; self; end
+      def init; @a = 1; end
+    end
+    i = InteractionExpectingInit.run
+    assert_equal 1, i.instance_variable_get(:@a)
+  end
+
   should "call the run instance method when running an interaction" do
     class InteractionExpectingRun < Interaction; end
     InteractionExpectingRun.any_instance.expects(:run)
