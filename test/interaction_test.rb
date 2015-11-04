@@ -24,12 +24,21 @@ class InteractionTest < Test::Unit::TestCase
   end
 
   should "call init when running an interaction with an init method" do
-    class InteractionExpectingInit < Interaction
+    class InteractionExpectingInit2 < Interaction
       def run; self; end
       def init; @a = 1; end
     end
-    i = InteractionExpectingInit.run
+    i = InteractionExpectingInit2.run
     assert_equal 1, i.instance_variable_get(:@a)
+  end
+
+  should "call the writer if there is one" do
+    class InteractionWithWriter < Interaction
+      def run; self; end
+      def a= val; @a += 1; end
+    end
+    i = InteractionWithWriter.run a: 1
+    assert_equal 2, i.instance_variable_get(:@a)
   end
 
   should "call the run instance method when running an interaction" do

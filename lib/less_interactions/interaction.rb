@@ -20,6 +20,9 @@ module Less
       end
       nils.merge(options).each do |name, value|
         instance_variable_set "@#{name}", value
+        if respond_to? "#{name}="
+          send "#{name}=", value
+        end
       end
     end
 
