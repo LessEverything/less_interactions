@@ -25,6 +25,7 @@ class InteractionTest < Test::Unit::TestCase
 
   should "call init when running an interaction with an init method" do
     class InteractionExpectingInit2 < Interaction
+      expects :a, allow_nil: true
       def run; self; end
       def init; @a = 1; end
     end
@@ -34,11 +35,24 @@ class InteractionTest < Test::Unit::TestCase
 
   should "call the writer if there is one" do
     class InteractionWithWriter < Interaction
+      expects :a, allow_nil: true
       def run; self; end
       def a= val; @a += 1; end
     end
     i = InteractionWithWriter.run a: 1
     assert_equal 2, i.instance_variable_get(:@a)
+  end
+
+  should "call the writer if there is one and value is not null" do
+    class GobbledyGook; def gobble; "gook"; end; end
+    class InteractionWithWriter < Interaction
+      expects :a, allow_nil: true
+      def run; self; end
+      def a= val; @a = val.gobble; end
+    end
+    i = InteractionWithWriter.run
+    i.a = GobbledyGook.new
+    assert_equal "gook", i.instance_variable_get(:@a)
   end
 
   should "call the run instance method when running an interaction" do
