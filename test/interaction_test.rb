@@ -182,4 +182,22 @@ class InteractionTest < Test::Unit::TestCase
      x = OverrideIt.new(int: 1).run
      assert_equal "1", x.send(:int)
    end
+
+
+   should "fail if all expects_any parameters are nil" do
+     class AnyInteractionWithAllNilParameters < Less::Interaction
+       expects_any :title, :a, :b
+       def run; end
+     end
+     assert_raise(MissingParameterError) { AnyInteractionWithAllNilParameters.run() }
+   end
+
+   should "pass if any expects_any parameters is not nil" do
+     class AnyInteractionWithOneNonNilParameter < Less::Interaction
+       expects_any :title, :a, :b
+       def run; true; end
+     end
+     assert AnyInteractionWithOneNonNilParameter.run(:b => 1)
+   end
+
 end

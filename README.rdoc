@@ -19,7 +19,7 @@ Rails is great, but if you build a rails app of any size you start running into 
 * What are all the side effects of calling this method?
 
 
-== Dear jesus and baby jesus, what do I do?!
+== What do I do?!
 
 Less::Interactions are a place to put all of your business logic and still get all the rails goodness you love.
 
@@ -79,6 +79,8 @@ After:
     expects :some_other_thing_the_interaction_needs, allow_nil: true
     expects :business
     expects :user
+    #only one of these is required
+    expects_any :need_this, :or, :this
 
     # method chain in use case is easy to see.
     def run

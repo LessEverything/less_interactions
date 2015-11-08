@@ -18,6 +18,8 @@ module Less
       n.each do |name, val|
         nils[name] = nil
       end
+      self.class.any_expectations.flatten.each {|e| nils[e] = nil}
+
       nils.merge(options).each do |name, value|
         instance_variable_set "@#{name}", value
         if respond_to?( "#{name}=" ) && !value.nil?
@@ -32,7 +34,7 @@ module Less
     #
     # The default implementation raises an {InvalidInteractionError}
     def run
-      raise InvalidInteractionError, "You most override the run instance method in #{self.class}"
+      raise InvalidInteractionError, "You must override the run instance method in #{self.class}"
     end
 
     def init
@@ -46,7 +48,7 @@ module Less
     def self.run(context = {}, options = {})
       me = new(context, options)
       me.init
-      raise MissingParameterError unless me.send :expectations_met?
+      me.send :expectations_met?
       me.run
     end
 
@@ -64,27 +66,61 @@ module Less
       else
         options = {}
       end
-      parameters.each do |param|
-        methods = (self.instance_methods + self.private_instance_methods)
-        self.send(:attr_reader, param.to_sym) unless methods.member?(param.to_sym)
-        add_expectation(param, options)
+      __setup_expecations parameters do |parameter|
+        add_expectation(parameter, options)
       end
+    end
+
+    def self.expects_any *parameters
+      __setup_expecations parameters do |parameter|
+      end
+      add_any_expectation(parameters)
     end
 
 
 
     private
 
+    def self.__setup_expecations parameters
+      parameters.each do |param|
+        methods = (self.instance_methods + self.private_instance_methods)
+        self.send(:attr_reader, param.to_sym) unless methods.member?(param.to_sym)
+        yield param if block_given?
+      end
+    end
+
     def self.add_expectation(parameter, options)
       expectations[parameter] = options
     end
 
+    def self.add_any_expectation(parameters)
+      any_expectations << parameters
+    end
+
     def expectations_met?
+      __expects_mets? && __expects_any_mets?
+    end
+
+    def __expects_any_mets?
+      self.class.any_expectations.each do |any_set|
+        if any_set.all? {|e| instance_variable_get("@#{e}").nil?}
+          raise MissingParameterError, "Parameters empty   :#{any_set.to_s} (At least one of these must not be nil)"
+        end
+      end
+      true
+    end
+
+    def __expects_mets?
       self.class.expectations.each do |param, param_options|
         unless param_options[:allow_nil]
           raise MissingParameterError, "Parameter empty   :#{param.to_s}" if instance_variable_get("@#{param}").nil?
         end
       end
+      true
+    end
+
+    def self.any_expectations
+      @any_expectations ||= []
     end
 
     def self.expectations
