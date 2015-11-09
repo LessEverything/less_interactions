@@ -200,4 +200,14 @@ class InteractionTest < Test::Unit::TestCase
      assert AnyInteractionWithOneNonNilParameter.run(:b => 1)
    end
 
+   should "call expectations_met? before init" do
+     class ExpectationsMetBeforeInit < Less::Interaction
+       expects :a
+       expects_any :b, :c
+       def init; raise "Called init first"; end
+       def run; end
+     end
+     assert_raise(MissingParameterError) { ExpectationsMetBeforeInit.run() }
+   end
+
 end

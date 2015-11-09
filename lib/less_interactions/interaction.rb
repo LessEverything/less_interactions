@@ -47,8 +47,8 @@ module Less
     # This will initialize your interaction with the options you pass to it and then call its {#run} method.
     def self.run(context = {}, options = {})
       me = new(context, options)
-      me.init
       me.send :expectations_met?
+      me.init
       me.run
     end
 
