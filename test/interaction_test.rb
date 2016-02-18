@@ -1,10 +1,10 @@
 require 'test_helper'
-class InteractionTest < Test::Unit::TestCase
+class InteractionTest < Minitest::Test
   include Less
 
   should "not be able to run an interaction without run defined" do
     class InteractionWithoutRun < Interaction; end
-    assert_raise(InvalidInteractionError) { InteractionWithoutRun.run }
+    assert_raises(InvalidInteractionError) { InteractionWithoutRun.run }
   end
 
   should "be able to run an interaction with run defined" do
@@ -67,7 +67,7 @@ class InteractionTest < Test::Unit::TestCase
 
       def run; end
     end
-    assert_raise(MissingParameterError) { InteractionMissingParameter.run }
+    assert_raises(MissingParameterError) { InteractionMissingParameter.run }
   end
 
   should "fail if an expected parameter is nil" do
@@ -76,7 +76,7 @@ class InteractionTest < Test::Unit::TestCase
 
       def run; end
     end
-    assert_raise(MissingParameterError) { InteractionWithNilParameter.run(:title => nil) }
+    assert_raises(MissingParameterError) { InteractionWithNilParameter.run(:title => nil) }
   end
 
   should "run if an expected parameter is found" do
@@ -189,7 +189,7 @@ class InteractionTest < Test::Unit::TestCase
        expects_any :title, :a, :b
        def run; end
      end
-     assert_raise(MissingParameterError) { AnyInteractionWithAllNilParameters.run() }
+     assert_raises(MissingParameterError) { AnyInteractionWithAllNilParameters.run() }
    end
 
    should "pass if any expects_any parameters is not nil" do
