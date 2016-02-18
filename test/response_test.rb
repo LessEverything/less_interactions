@@ -6,7 +6,7 @@ class X < Less::Interaction
   end
 end
 
-class ResponseTest < Test::Unit::TestCase
+class ResponseTest < MiniTest::Test
   include Less
 
   
