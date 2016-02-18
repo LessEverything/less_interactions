@@ -207,7 +207,7 @@ class InteractionTest < Minitest::Test
        def init; raise "Called init first"; end
        def run; end
      end
-     assert_raise(MissingParameterError) { ExpectationsMetBeforeInit.run() }
+     assert_raises(MissingParameterError) { ExpectationsMetBeforeInit.run() }
    end
 
 end
