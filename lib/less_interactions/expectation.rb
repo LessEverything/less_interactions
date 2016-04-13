@@ -1,12 +1,11 @@
 # Verifies that some conditions are met for a member of a parameters hash
 module Less
   class Expectation
-
+    attr_reader :parameter
     def initialize parameter, options = {}
       @parameter = parameter
       @allow_nil = options[:allow_nil]
     end
-
 
     def verify(params)
       unless verifies_expectations?(params)

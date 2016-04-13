@@ -33,16 +33,6 @@ class InteractionTest < Minitest::Test
     assert_equal 1, i.instance_variable_get(:@a)
   end
 
-  should "call the writer if there is one" do
-    class InteractionWithWriter < Interaction
-      expects :a, allow_nil: true
-      def run; self; end
-      def a= val; @a += 1; end
-    end
-    i = InteractionWithWriter.run a: 1
-    assert_equal 2, i.instance_variable_get(:@a)
-  end
-
   should "call the writer if there is one and value is not null" do
     class GobbledyGook; def gobble; "gook"; end; end
     class InteractionWithWriter < Interaction
@@ -80,39 +70,39 @@ class InteractionTest < Minitest::Test
   end
 
   should "run if an expected parameter is found" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterA < Less::Interaction
       expects :title
 
       def run; end
     end
-    assert_nothing_raised { InteractionWithParameter.run(:title => "Hello, test") }
+    assert_nothing_raised { InteractionWithParameterA.run(:title => "Hello, test") }
   end
 
   should "run if an expected parameter is found, even if it is false" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterB < Less::Interaction
       expects :title
 
       def run; end
     end
-    assert_nothing_raised { InteractionWithParameter.run(:title => false) }
+    assert_nothing_raised { InteractionWithParameterB.run(:title => false) }
   end
 
   should "run if an expected parameter is found, even if it is nil, if the option is specified" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterC < Less::Interaction
       expects :title, :allow_nil => true
 
       def run;end
     end
-    assert_nothing_raised { InteractionWithParameter.run(:title => nil) }
+    assert_nothing_raised { InteractionWithParameterC.run(:title => nil) }
   end
 
   should "run if an expected parameter is found, even if it is nil, if the option is not specified, but is allow_nil and is called" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterD < Less::Interaction
       expects :title, :allow_nil => true
 
       def run; title;end
     end
-    assert_nothing_raised { InteractionWithParameter.run() }
+    assert_nothing_raised { InteractionWithParameterD.run() }
   end
 
   should "set ivars from options on initialize" do

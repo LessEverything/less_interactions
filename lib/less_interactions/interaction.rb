@@ -11,20 +11,9 @@ module Less
       else
         options[:context] = context # add context to the options so will get the ivar and getter
       end
-
-      ex = self.class.expectations.dup
-      n = ex.keep_if {|name, allow_nil| allow_nil.has_key?(:allow_nil) && allow_nil[:allow_nil]}
-      nils = {}
-      n.each do |name, val|
-        nils[name] = nil
-      end
-      self.class.any_expectations.flatten.each {|e| nils[e] = nil}
-
-      nils.merge(options).each do |name, value|
+      @params = options
+      @params.each do |name, value|
         instance_variable_set "@#{name}", value
-        if respond_to?( "#{name}=" ) && !value.nil?
-          send "#{name}=", value
-        end
       end
     end
 
@@ -66,13 +55,16 @@ module Less
       else
         options = {}
       end
-      __setup_expecations parameters do |parameter|
+
+      parameters.each do |parameter|
+        add_reader(parameter)
         add_expectation(parameter, options)
       end
     end
 
     def self.expects_any *parameters
-      __setup_expecations parameters do |parameter|
+      parameters.each do |parameter|
+        add_reader(parameter)
       end
       add_any_expectation(parameters)
     end
@@ -81,16 +73,16 @@ module Less
 
     private
 
-    def self.__setup_expecations parameters
-      parameters.each do |param|
-        methods = (self.instance_methods + self.private_instance_methods)
-        self.send(:attr_reader, param.to_sym) unless methods.member?(param.to_sym)
-        yield param if block_given?
-      end
+    def self.add_reader param
+      methods = (self.instance_methods + self.private_instance_methods)
+      self.send(:attr_reader, param.to_sym) unless methods.member?(param.to_sym)
     end
 
     def self.add_expectation(parameter, options)
-      expectations[parameter] = options
+      ex = Expectation.new(parameter, options)
+      if expectations.none? { |e| e.parameter == parameter }
+        expectations << ex
+      end
     end
 
     def self.add_any_expectation(parameters)
@@ -111,10 +103,8 @@ module Less
     end
 
     def __expects_mets?
-      self.class.expectations.each do |param, param_options|
-        unless param_options[:allow_nil]
-          raise MissingParameterError, "Parameter empty   :#{param.to_s}" if instance_variable_get("@#{param}").nil?
-        end
+      self.class.expectations.each do |expectation|
+        expectation.verify(@params)
       end
       true
     end
@@ -124,7 +114,7 @@ module Less
     end
 
     def self.expectations
-      @expectations ||= {}
+      @expectations ||= []
     end
   end
 
