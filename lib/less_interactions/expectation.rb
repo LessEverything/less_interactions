@@ -9,6 +9,13 @@ module Less
 
 
     def verify(params)
+      unless verifies_expectations?(params)
+        raise MissingParameterError, "Parameter empty  :#{@parameter}"
+      end
+    end
+    private
+
+    def verifies_expectations?(params)
       if @allow_nil == nil || @allow_nil == false
         params.has_key?(@parameter) && params[@parameter] != nil
       else
@@ -16,4 +23,5 @@ module Less
       end
     end
   end
+  class MissingParameterError < StandardError; end
 end

@@ -5,25 +5,32 @@ class ExpectationTest < Minitest::Test
   should "parameters hash can meet an expectation" do
     ex = Expectation.new(:name)
     params = {name: "Mike", age: 27}
-    assert ex.verify(params)
+    assert_nothing_raised do
+      ex.verify(params)
+    end
   end
 
   should "parameters hash fails when not meeting an expectation" do
     ex = Expectation.new(:name)
     params = {name: nil, age: 27}
-    refute ex.verify(params)
+    assert_raises(MissingParameterError) do
+      ex.verify(params)
+    end
   end
 
   should "parameters hash fails if expectation is absent" do
     ex = Expectation.new(:name)
     params = {age: 27}
-    refute ex.verify(params)
+    assert_raises(MissingParameterError) do
+      ex.verify(params)
+    end
   end
 
   should "parameters should not fail if allow nil is true parameters value is nil" do
     ex = Expectation.new(:name, allow_nil: true)
     params = {name: nil}
-    assert ex.verify(params)
+    assert_nothing_raised do
+      ex.verify(params)
+    end
   end
-
 end

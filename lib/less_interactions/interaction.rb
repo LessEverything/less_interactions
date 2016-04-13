@@ -130,5 +130,4 @@ module Less
 
 
   class InvalidInteractionError < StandardError; end
-  class MissingParameterError < StandardError; end
 end
