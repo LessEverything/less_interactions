@@ -33,4 +33,12 @@ class ExpectationTest < Minitest::Test
       ex.verify(params)
     end
   end
+
+  should "parameters should not fail if allow nil is true and no parameters are passed" do
+    ex = Expectation.new(:name, allow_nil: true)
+    params = {}
+    assert_nothing_raised do
+      ex.verify(params)
+    end
+  end
 end

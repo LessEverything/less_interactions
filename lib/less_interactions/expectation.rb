@@ -19,7 +19,7 @@ module Less
       if @allow_nil == nil || @allow_nil == false
         params.has_key?(@parameter) && params[@parameter] != nil
       else
-        params.has_key?(@parameter)
+        true
       end
     end
   end
