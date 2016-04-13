@@ -20,4 +20,10 @@ class ExpectationTest < Minitest::Test
     refute ex.verify(params)
   end
 
+  should "parameters should not fail if allow nil is true parameters value is nil" do
+    ex = Expectation.new(:name, allow_nil: true)
+    params = {name: nil}
+    assert ex.verify(params)
+  end
+
 end
