@@ -95,6 +95,7 @@ module Less
 
     def __expects_any_mets?
       self.class.any_expectations.each do |any_set|
+        #TODO if all of the expectations are nil then raise an error
         if any_set.all? {|e| instance_variable_get("@#{e}").nil?}
           raise MissingParameterError, "Parameters empty   :#{any_set.to_s} (At least one of these must not be nil)"
         end
