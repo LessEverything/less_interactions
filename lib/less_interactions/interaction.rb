@@ -1,4 +1,3 @@
-
 module Less
   class Interaction
     # Initialize the objects for an interaction.
@@ -86,9 +85,9 @@ module Less
     end
 
     def self.add_any_expectation(parameters)
-      ex = MultipleChoiceExpectation.new(*parameters)
-      if any_expectations.none? {|e| e.parameters == parameters}
-        any_expectations << ex
+      new_ex = MultipleChoiceExpectation.new(parameters)
+      if any_expectations.none? {|ex| ex.parameters == new_ex.parameters }
+        any_expectations << new_ex
       end
     end
 
