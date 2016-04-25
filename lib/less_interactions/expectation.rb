@@ -24,3 +24,5 @@ module Less
   end
   class MissingParameterError < StandardError; end
 end
+
+

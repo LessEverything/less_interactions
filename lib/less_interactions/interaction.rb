@@ -86,7 +86,10 @@ module Less
     end
 
     def self.add_any_expectation(parameters)
-      any_expectations << parameters
+      ex = MultipleChoiceExpectation.new(*parameters)
+      if any_expectations.none? {|e| e.parameters == parameters}
+        any_expectations << ex
+      end
     end
 
     def expectations_met?
@@ -94,11 +97,9 @@ module Less
     end
 
     def __expects_any_mets?
-      self.class.any_expectations.each do |any_set|
+      self.class.any_expectations.each do |expectation|
         #TODO if all of the expectations are nil then raise an error
-        if any_set.all? {|e| instance_variable_get("@#{e}").nil?}
-          raise MissingParameterError, "Parameters empty   :#{any_set.to_s} (At least one of these must not be nil)"
-        end
+        expectation.verify(@params)
       end
       true
     end
