@@ -111,7 +111,6 @@ class InteractionTest < Minitest::Test
     assert_equal 2, i.instance_variable_get(:@b)
   end
 
-
   should "Convert first param to context on initialize" do
     i = Less::Interaction.new 1, b:2
     assert_equal 1, i.instance_variable_get(:@context)
@@ -172,7 +171,6 @@ class InteractionTest < Minitest::Test
      x = OverrideIt.new(int: 1).run
      assert_equal "1", x.send(:int)
    end
-
 
    should "fail if all expects_any parameters are nil" do
      class AnyInteractionWithAllNilParameters < Less::Interaction

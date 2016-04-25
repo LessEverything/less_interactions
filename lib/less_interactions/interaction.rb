@@ -97,7 +97,6 @@ module Less
 
     def __expects_any_mets?
       self.class.any_expectations.each do |expectation|
-        #TODO if all of the expectations are nil then raise an error
         expectation.verify(@params)
       end
       true
