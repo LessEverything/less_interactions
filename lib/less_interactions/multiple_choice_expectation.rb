@@ -1,5 +1,5 @@
-#TODO ExpectationCollection.new(:name, :age, :weight)
-# :nodoc:
+#Accepts multiple parameters and validates them to ensure at least one is present and not nil.
+#Raise MissingParameterError if the correct parameters are not present. 
 module  Less
   class MultipleChoiceExpectation 
     attr_reader :parameters
