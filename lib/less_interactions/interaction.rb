@@ -10,9 +10,13 @@ module Less
       else
         options[:context] = context # add context to the options so will get the ivar and getter
       end
-      @params = options
-      @params.each do |name, value|
-        instance_variable_set "@#{name}", value
+
+      self.all_params = options
+      set_instance_variables
+      options.each do |name, value|
+        if respond_to?( "#{name}=" ) 
+          send "#{name}=", value   
+        end
       end
     end
 
@@ -30,11 +34,11 @@ module Less
 
     # Run your interaction.
     # @param [Object] context
-    # @param [Hash] options
+    # @param [Hash] params
     #
-    # This will initialize your interaction with the options you pass to it and then call its {#run} method.
-    def self.run(context = {}, options = {})
-      me = new(context, options)
+    # This will initialize your interaction with the params you pass to it and then call its {#run} method.
+    def self.run(context = {}, params = {})
+      me = new(context, params)
       me.send :expectations_met?
       me.init
       me.run
@@ -72,6 +76,29 @@ module Less
 
     private
 
+    def all_params
+      @__all_params
+    end
+
+    def all_params=(p)
+      @__all_params = p
+    end
+
+    def set_instance_variables
+      all_params.each do |name, value|
+        instance_variable_set "@#{name}", value
+      end
+
+      self.class.expectations.each do |expectation|
+        name = expectation.parameter
+        if all_params.has_key?(name)
+          instance_variable_set "@#{name}", all_params[name]
+        elsif expectation.allows_nil?
+          instance_variable_set "@#{name}", nil
+        end
+      end
+    end
+
     def self.add_reader param
       methods = (self.instance_methods + self.private_instance_methods)
       self.send(:attr_reader, param.to_sym) unless methods.member?(param.to_sym)
@@ -97,14 +124,14 @@ module Less
 
     def __expects_any_mets?
       self.class.any_expectations.each do |expectation|
-        expectation.verify(@params)
+        expectation.verify(all_params)
       end
       true
     end
 
     def __expects_mets?
       self.class.expectations.each do |expectation|
-        expectation.verify(@params)
+        expectation.verify(all_params)
       end
       true
     end

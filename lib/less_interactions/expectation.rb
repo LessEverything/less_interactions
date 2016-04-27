@@ -12,6 +12,11 @@ module Less
         raise MissingParameterError, "Parameter empty  :#{@parameter}"
       end
     end
+
+    def allows_nil?
+      @allow_nil
+    end    
+
     private
 
     def verifies_expectations?(params)

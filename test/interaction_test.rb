@@ -132,7 +132,6 @@ class InteractionTest < Minitest::Test
   end
 
   should "be able to override an expects" do
-
     class OverrideExpects < Less::Interaction
       expects :object, allow_nil: true
 
@@ -198,4 +197,35 @@ class InteractionTest < Minitest::Test
      assert_raises(MissingParameterError) { ExpectationsMetBeforeInit.run() }
    end
 
+   should "call the writer if there is one" do   
+     class InteractionWithWriter < Interaction    
+       expects :a, allow_nil: true    
+       def run; self; end   
+       def a= val; @a += 1; end   
+     end    
+     i = InteractionWithWriter.run a: 1   
+     assert_equal 2, i.instance_variable_get(:@a)   
+   end    
+ 
+  should "call the writer even if the value of the param is nil" do 
+    class InteractionWithWriterb < Interaction
+      expects :a, allow_nil: true
+      def run; self; end
+      def a= val; @a = 1; end
+    end
+    i = InteractionWithWriterb.run a: nil 
+    assert_equal 1, i.instance_variable_get(:@a)
+  end
+
+  should "not call the writer if the param is not passed in" do 
+    class InteractionWithWriterc < Interaction
+      expects :a, allow_nil: true
+      def run; self; end 
+      def a= val; @a = 1; end 
+    end
+    i = InteractionWithWriterc.run 
+    assert_equal nil, i.instance_variable_get(:@a)
+  end
+
+  # if param is not passed in then writer does not get called
 end
