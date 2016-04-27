@@ -119,29 +119,15 @@ module Less
     end
 
     def expectations_met?
-      __expects_mets? && __expects_any_mets?
-    end
-
-    def __expects_any_mets?
-      self.class.any_expectations.each do |expectation|
-        expectation.verify(all_params)
-      end
-      true
-    end
-
-    def __expects_mets?
-      self.class.expectations.each do |expectation|
-        expectation.verify(all_params)
-      end
-      true
+      self.class.any_expectations.verify!(all_params) && self.class.expectations.verify!(all_params)
     end
 
     def self.any_expectations
-      @any_expectations ||= []
+      @any_expectations ||= ExpectationArray.new()
     end
 
     def self.expectations
-      @expectations ||= []
+      @expectations ||= ExpectationArray.new()
     end
   end
 
