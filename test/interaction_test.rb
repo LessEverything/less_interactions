@@ -33,16 +33,6 @@ class InteractionTest < Minitest::Test
     assert_equal 1, i.instance_variable_get(:@a)
   end
 
-  should "call the writer if there is one" do
-    class InteractionWithWriter < Interaction
-      expects :a, allow_nil: true
-      def run; self; end
-      def a= val; @a += 1; end
-    end
-    i = InteractionWithWriter.run a: 1
-    assert_equal 2, i.instance_variable_get(:@a)
-  end
-
   should "call the writer if there is one and value is not null" do
     class GobbledyGook; def gobble; "gook"; end; end
     class InteractionWithWriter < Interaction
@@ -80,39 +70,39 @@ class InteractionTest < Minitest::Test
   end
 
   should "run if an expected parameter is found" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterA < Less::Interaction
       expects :title
 
       def run; end
     end
-    assert_nothing_raised { InteractionWithParameter.run(:title => "Hello, test") }
+    assert_nothing_raised { InteractionWithParameterA.run(:title => "Hello, test") }
   end
 
   should "run if an expected parameter is found, even if it is false" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterB < Less::Interaction
       expects :title
 
       def run; end
     end
-    assert_nothing_raised { InteractionWithParameter.run(:title => false) }
+    assert_nothing_raised { InteractionWithParameterB.run(:title => false) }
   end
 
   should "run if an expected parameter is found, even if it is nil, if the option is specified" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterC < Less::Interaction
       expects :title, :allow_nil => true
 
       def run;end
     end
-    assert_nothing_raised { InteractionWithParameter.run(:title => nil) }
+    assert_nothing_raised { InteractionWithParameterC.run(:title => nil) }
   end
 
   should "run if an expected parameter is found, even if it is nil, if the option is not specified, but is allow_nil and is called" do
-    class InteractionWithParameter < Less::Interaction
+    class InteractionWithParameterD < Less::Interaction
       expects :title, :allow_nil => true
 
       def run; title;end
     end
-    assert_nothing_raised { InteractionWithParameter.run() }
+    assert_nothing_raised { InteractionWithParameterD.run() }
   end
 
   should "set ivars from options on initialize" do
@@ -120,7 +110,6 @@ class InteractionTest < Minitest::Test
     assert_equal 1, i.instance_variable_get(:@a)
     assert_equal 2, i.instance_variable_get(:@b)
   end
-
 
   should "Convert first param to context on initialize" do
     i = Less::Interaction.new 1, b:2
@@ -143,7 +132,6 @@ class InteractionTest < Minitest::Test
   end
 
   should "be able to override an expects" do
-
     class OverrideExpects < Less::Interaction
       expects :object, allow_nil: true
 
@@ -183,7 +171,6 @@ class InteractionTest < Minitest::Test
      assert_equal "1", x.send(:int)
    end
 
-
    should "fail if all expects_any parameters are nil" do
      class AnyInteractionWithAllNilParameters < Less::Interaction
        expects_any :title, :a, :b
@@ -210,4 +197,35 @@ class InteractionTest < Minitest::Test
      assert_raises(MissingParameterError) { ExpectationsMetBeforeInit.run() }
    end
 
+   should "call the writer if there is one" do   
+     class InteractionWithWriter < Interaction    
+       expects :a, allow_nil: true    
+       def run; self; end   
+       def a= val; @a += 1; end   
+     end    
+     i = InteractionWithWriter.run a: 1   
+     assert_equal 2, i.instance_variable_get(:@a)   
+   end    
+ 
+  should "call the writer even if the value of the param is nil" do 
+    class InteractionWithWriterb < Interaction
+      expects :a, allow_nil: true
+      def run; self; end
+      def a= val; @a = 1; end
+    end
+    i = InteractionWithWriterb.run a: nil 
+    assert_equal 1, i.instance_variable_get(:@a)
+  end
+
+  should "not call the writer if the param is not passed in" do 
+    class InteractionWithWriterc < Interaction
+      expects :a, allow_nil: true
+      def run; self; end 
+      def a= val; @a = 1; end 
+    end
+    i = InteractionWithWriterc.run 
+    assert_equal nil, i.instance_variable_get(:@a)
+  end
+
+  # if param is not passed in then writer does not get called
 end
