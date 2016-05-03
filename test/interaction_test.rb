@@ -227,5 +227,22 @@ class InteractionTest < Minitest::Test
     assert_equal nil, i.instance_variable_get(:@a)
   end
 
-  # if param is not passed in then writer does not get called
+  should "set a getter when returns is called" do 
+    class InteractionWithReturns < Interaction
+      returns :a
+      def run; self; end
+    end
+    i = InteractionWithReturns.run(a: 1)
+    assert_equal 1, i.a
+  end
+
+  should "not set a getter if returns is not called" do 
+    class InteractionWithReturns2 < Interaction
+      def run; self; end
+    end
+    i = InteractionWithReturns2.run(a: 1)
+    assert_raises NoMethodError do 
+      i.a
+    end
+  end
 end
