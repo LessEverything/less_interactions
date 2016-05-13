@@ -82,7 +82,14 @@ After:
     #only one of these is required
     expects_any :need_this, :or, :this
 
-    # method chain in use case is easy to see.
+    # A way to document what you are expecting to be returned 
+    # Also creates setter and getter methods for each
+    returns :user
+    returns :was_this_successful
+
+    # Method chain in use case is easy to see.
+    # To have access to the getter and setter methods created with returns 
+    # you need the run method to return self
     def run
       do_somthing_with some_other_thing_the_interaction_needs
       build_or_find_an_expense
@@ -93,8 +100,9 @@ After:
       update_budgets
       update_bank_accounts
       @expense
+      self
     end
-
+ 
     private
 
     # implementation of other methods

@@ -72,7 +72,11 @@ module Less
       add_any_expectation(parameters)
     end
 
-
+    # Make an attr_accessor alias for what you are expecting to be returned
+    # Need to return self in the run method for to use this
+    def self.returns(*args)
+      attr_accessor(*args)
+    end
 
     private
 
